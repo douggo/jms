@@ -1,6 +1,5 @@
 import javax.jms.*;
 import javax.naming.InitialContext;
-import java.util.Scanner;
 
 public class TesteProdutor {
 
