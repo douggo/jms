@@ -1,7 +1,9 @@
+package queue;
+
 import javax.jms.*;
 import javax.naming.InitialContext;
 
-public class TesteProdutor {
+public class QueueProducer {
 
     public static void main(String[] args) throws Exception {
         InitialContext context = new InitialContext();

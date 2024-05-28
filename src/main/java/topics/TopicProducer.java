@@ -1,8 +1,9 @@
+package topics;
+
 import javax.jms.*;
 import javax.naming.InitialContext;
-import java.util.Scanner;
 
-public class TesteConsumidor {
+public class TopicProducer {
 
     public static void main(String[] args) throws Exception {
         InitialContext context = new InitialContext();
@@ -13,18 +14,10 @@ public class TesteConsumidor {
         connection.start();
 
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        MessageConsumer consumer = session.createConsumer((Destination) context.lookup("financeiro"));
+        MessageProducer producer = session.createProducer((Destination) context.lookup("loja"));
 
-        consumer.setMessageListener(message -> {
-            TextMessage textMessage = (TextMessage) message;
-            try {
-                System.out.println(textMessage.getText());
-            } catch (JMSException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        new Scanner(System.in).nextLine();
+        Message message = session.createTextMessage("Testando criação de mensagem!");
+        producer.send(message);
 
         session.close();
         connection.close();
