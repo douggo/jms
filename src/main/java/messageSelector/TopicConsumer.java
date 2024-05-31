@@ -1,5 +1,7 @@
 package messageSelector;
 
+import modelo.Pedido;
+
 import javax.jms.*;
 import javax.naming.InitialContext;
 import java.util.Scanner;
@@ -23,9 +25,10 @@ public class TopicConsumer {
         );
 
         consumer.setMessageListener(message -> {
-            TextMessage textMessage = (TextMessage) message;
+            ObjectMessage objectMessage = (ObjectMessage) message;
             try {
-                System.out.println(textMessage.getText());
+                Pedido pedido = (Pedido) objectMessage.getObject();
+                System.out.println(pedido.getCodigo());
             } catch (JMSException e) {
                 throw new RuntimeException(e);
             }
