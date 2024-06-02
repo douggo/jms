@@ -1,5 +1,7 @@
 package deadLetterQueue;
 
+import org.apache.activemq.broker.region.policy.ConstantPendingMessageLimitStrategy;
+
 import javax.jms.*;
 import javax.naming.InitialContext;
 import java.util.Scanner;
@@ -14,10 +16,18 @@ public class QueueConsumer {
 
         connection.start();
 
-        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        Session session = connection.createSession(true, Session.SESSION_TRANSACTED);
         MessageConsumer consumer = session.createConsumer((Destination) context.lookup("DLQ"));
 
-        consumer.setMessageListener(System.out::println);
+        consumer.setMessageListener(message -> {
+            TextMessage textMessage = (TextMessage) message;
+            try {
+                System.out.println(textMessage.getText());
+                session.commit();
+            } catch (JMSException e) {
+                throw new RuntimeException(e);
+            }
+        });
         new Scanner(System.in).nextLine();
 
         session.close();
